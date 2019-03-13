@@ -1,11 +1,13 @@
 library(DAutilities)
 library(decisionSupport)
 
+filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
+
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}
 
-make_variables(estimate_read_csv(paste(filepath,"Turkana_estimates_190305.csv",sep="")))
+make_variables(estimate_read_csv(paste(filepath,"Turkana_estimates_190313.csv",sep="")))
 
 spate_model<-function(x, varnames)
 {
@@ -17,72 +19,54 @@ spate_model<-function(x, varnames)
   # and repair and maintenance
   
   # Risk of improper design
-  risk_improper_design_factor <- c(chance_event(prob_improper_design, value_if = 1, value_if_not = 0, n = 1),rep(0,n_years-1))
-  for(i in 1:n_years)
-    if (risk_improper_design_factor[i]==1)
-      risk_improper_design_factor[(i:n_years)]<-1
+  # This risk is only in the first year and if there is a design problem, then the risk will persist 
+  # until the end of the project life, unless the structure fails. Thus, I loop it accordingly.
+  
+  #improper_design_factor <- cummax(c(chance_event(prob_improper_design, value_if = 1, value_if_not = 0, n = 1),rep(0,n_years-1)))
     
-    ## Risk of poor interpretation and implementation of the design and rejecting supervisors suggestion
-    supervision_cost_factor<-c(chance_event(prob_supervision, value_if = 1, value_if_not = 0, n = 1),rep(0, n_years-1))
-    risk_reject_supervisor_suggestion <-supervision_cost_factor*
-      c(chance_event(prob_reject_suggestions, value_if = 1, value_if_not = 0, n = 1),rep(0,n_years-1))
-    for(j in 1:n_years)
-      if (risk_reject_supervisor_suggestion[j]==1)
-        risk_reject_supervisor_suggestion[(j:n_years)]<-1
+  ## Risk of poor interpretation and implementation of the design and rejecting supervisors suggestion. 
+   
+   # The chance of highering supervisor is computed separately for ease of calculating the perecntage of cost, which 
+   # expressed as percentage of total construction cost, and will calculate the actual supervision cost later 
+   # (i.e. in the cost catagory).
+  #chance_supervision<-c(rbinom(1,1,prob_supervision),rep(0,n_years-1))
+  
+  #reject_supervisor_suggestion<-cummax(chance_supervision*c(rbinom(1,1,prob_reject_suggestions),rep(0,n_years-1))) 
     
-    # structural damage due to either improper design or poor interpretation and implementation of 
-    # the design. This could lead to either maintenace of the structure or total structural damage.
-    # For total structural damage
-    chance_str_failure<-c(0, chance_event(prob_total_str_failure, value_if = 1, value_if_not = 0, n = n_years-1))
-    for(a in 1:n_years)
-      if (chance_str_failure[a]==1)
-        chance_str_failure[(a:n_years)]<-1
-    risk_structural_failure<-(risk_improper_design_factor+risk_reject_supervisor_suggestion)*chance_str_failure
-    risk_structural_failure[risk_structural_failure>1]<-1
+  # structural damage due to either improper design or poor interpretation and implementation of 
+  # the design. This could lead to either maintenace of the structure or total structural damage.
     
-    # For repair and maintence
-    rep_maint_factor<-rep(0,n_years)
-    for(c in 2:n_years)
-      if (risk_structural_failure[c]==0)
-        rep_maint_factor[c]<-1
+  # For total structural damage
+  failure_due_to_poor_implementation<-cummax(c(0, chance_event(prob_total_str_failure, value_if = 1, value_if_not = 0, n = n_years-1)))  
+  
+  #str_failure<-cummax(c(0, chance_event(prob_total_str_failure, value_if = 1, value_if_not = 0, n = n_years-1)))  
+  #structural_failure<-pmax(improper_design_factor,reject_supervisor_suggestion)*str_failure
     
-    ## Risk of conflict and conflict management cost. This is the cost from the resource based conflicts, which
-    # resulted from the land use change (i.e. the change from pasture area into framing area). This can happen
-    # at any time and, thus, we use the chance event function.
+  # For repair and maintence
+  # rep_maint_factor<-as.numeric(structural_failure==0)
+   
+  ## Risk of conflict and conflict management cost. This is the cost from the resource based conflicts, which
+  # resulted from the land use change (i.e. the change from pasture area into framing area). This can happen
+  # at any time and, thus, we use the chance event function.
     
-    cost_conflict_management<-c(0, chance_event(prob_conflict, value_if = cost_managing_conflict, value_if_not = 0, n = n_years-1))
+  cost_conflict_management<-c(0, chance_event(prob_conflict, value_if = cost_managing_conflict, value_if_not = 0, n = n_years-1, CV_if= general_CV))
     
-    ## Risk of increase in siltation and sedimentation
-    chance_siltation<-c(0, chance_event(prob_siltation, value_if = 1, value_if_not = 0, n = n_years-1))
+  ## Risk of increase in siltation and sedimentation
+  siltation<-c(0, chance_event(prob_siltation, value_if = 1, value_if_not = 0, n = n_years-1))
     
-    ## Risk of insufficeinet floodwater (i.e.due to low rainfall), which reduce crop productivity. In this case, 
-    # drought is refered to the precipitation below the expected minimum threshold, and occurance_rainfall is 
-    # equal to one when the rainfall is above the expected minimum threshold.
+  ## Risk of insufficeinet floodwater (i.e.due to low rainfall), which reduce crop productivity. In this case, 
+  # drought is refered to the precipitation below the expected minimum threshold, and occurance_rainfall is 
+  # equal to one when the rainfall is above the expected minimum threshold.
+  
+  # Crop yield reduction due to reduction in precipitation below the expected minimum threshold (i.e. drought)
+  drought<- 1-chance_event(prob_yield_red_dry, value_if = perc_reduction_crop_yield/100, value_if_not = 0, n = n_years,CV_if=general_CV)
     
-    Occurance_rainfall<-rep(1, n_years)
-    chance_drought<- c(0, chance_event(prob_dry_season, value_if = 1, value_if_not = 0, n = n_years-1))
-    for(t in 2:(n_years))
-      if (chance_drought[t]==1)
-        Occurance_rainfall[t]<-0 else
-          Occurance_rainfall[t]<-1
-    
-    # crop yield reduction due to reduction in precipitation below the expected minimum threshold
-    perc_yield_reduction<-vv(perc_reduction_crop_yield/100, general_CV, n_years,lower_limit = 0, upper_limit = 100)
-    yield_reduction_factor_drought<-chance_drought*perc_yield_reduction
-    
-    
-    ## Risk of excess flooding. Here, the expected rainfall could be higher than the maximum threshold, which crops could
+  # Risk of excess flooding. Here, the expected rainfall could be higher than the maximum threshold, which crops could
     # opitmally grow, that lead to flooding and loss in crop productivity. 
-    
-    Occurance_excess_flooding<-Occurance_rainfall* 
-      c(0, chance_event(prob_excess_rainfall, value_if = 1, value_if_not = 0, n = n_years-1))
-    chance_flooding_affect_crop_area<-Occurance_excess_flooding* 
-      c(0, chance_event(prob_excess_flooding, value_if = 1, value_if_not = 0, n = n_years-1))
-    
-    perc_yeild_reduction_flooding <- vv(perc_reduction_crop_yield_excess_rainfall/100, general_CV, n_years,lower_limit = 0, upper_limit = 100)
-    yield_reduction_factor_flooding<-chance_flooding_affect_crop_area*perc_yeild_reduction_flooding
-    
-    ### Costs of the proposed intervention. The propsed intervention has the following cost catagories, which we catagorized them as
+  
+  yield_reduction_flooding<- 1-chance_event(prob_yield_red_flood, value_if = perc_reduction_crop_yield_flood/100, value_if_not = 0, n = n_years, CV_if=general_CV)
+  
+  ### Costs of the proposed intervention. The propsed intervention has the following cost catagories, which we catagorized them as
     # implementer's or project cost and the additional costs to the community and the environment. In the first part the implementer's 
     # costs are scripted. 
     
@@ -100,44 +84,32 @@ spate_model<-function(x, varnames)
     ## cost 3: Cost of study and design
     cost_study_design<-c(study_design_cost, rep(0, n_years-1))
     
-    ## cost 4: Watershed management cost. ccording to the experts, the expected watershed is expressed
-    # as a function or maltiple of the total farming area. TO compute this, we first determined 
-    # the  annual command area, which starts from year two and can vary through time.However,
-    # for the construction purpose, the implementer might consider a single estimates. Thus, we consider 
-    # the mean value of the farming area as initial planned area. The total watershed area is, then, calculated  
-    # coverted into kilometer square by deviding it to 100 (i.e. hectare to kilometer square converting factor), 
-    # and determined the totalwatershed management cost by multiplying with the cost estimate and the proportion
-    # intervened.
-    
-    total_farming_area<-c(0,vv(total_area,general_CV, n_years-1))
-    
-    initial_planned_area<-mean(total_farming_area)
-    
-    total_watershed_area<-rep(watershed_area*initial_planned_area/100,n_years)
-    
-    watershed_management_cost<-c(total_watershed_area[1]*perc_watershed_area_intervened/100*cost_watershed_mgmt, rep(0, n_years-1))
+    ## cost 4: Watershed management cost. 
+    watershed_management_cost<-c(watershed_area*perc_watershed_area_intervened/100*cost_watershed_mgmt, rep(0, n_years-1))
     
     ## cost 5: Repair and maintenance cost (first the total budget was eastimated and allocated for the annual 
     # repair and maintenace budget fo all years starting the second year. However, the actual cost is subject to
     # the repair and maintenance need.
     
     total_repair_maintenace_budget<-(construction_cost_stru[1]*perc_repair_maint_cost/100)/(n_years-1)
-    annual_repair_cost<-c(0, rep(total_repair_maintenace_budget,n_years-1))*rep_maint_factor
+    annual_repair_cost<-c(0, rep(total_repair_maintenace_budget,n_years-1))
     
-    # cost 6: Additional cost due to topography (i.e. having sloppy area).Lomidat area has different 
+    # cost 6: Additional cost due to topography (i.e. having slopey area).Lomidat area has different 
     # topographic setting, which might lead to an additional cost of constructing the structure.
     
-    sloppy_area_cost_factor<- c(chance_event(prob_sloppy_area, value_if = 1, value_if_not = 0, n = 1),rep(0, n_years-1))
-    additional_cost_sloppy<-construction_cost_stru*perc_increase_cost_due_to_slope/100*sloppy_area_cost_factor
+    slopey_area_cost_factor<- c(chance_event(prob_slopey_area, value_if = 1, value_if_not = 0, n = 1),rep(0, n_years-1))
+    additional_cost_slopey<-construction_cost_stru*perc_increase_cost_due_to_slope/100*slopey_area_cost_factor
     
-    # cost 7: cost of monitoring and supervision. As it mentioned in the first section of the risks, the project might 
-    # demand for external supervisor, which it leads to increase the project cost.
-    additional_cost_supervision<-construction_cost_stru*perc_supervision_cost*supervision_cost_factor
+    # cost 7: The additional cost due to the recruitment of external supervisor is the product of the chance of 
+    # supervision, percentage of the supervision cost, and the construction cost of the structure.
+    
+    #cost_supervision<-construction_cost_stru*perc_supervision_cost*chance_supervision
+    
     
     ## total cost to the implementer is then computed by summing up all the above mentioned costs
     total_implementers_cost<- construction_cost_stru+community_awareness_mobilization_cost+
-      cost_study_design+watershed_management_cost+annual_repair_cost+
-      additional_cost_sloppy+additional_cost_supervision
+                              cost_study_design+watershed_management_cost+annual_repair_cost+
+                              additional_cost_slopey
     ## Communal costs
     
     # cost 8: Cost of community contribution for repairing and maintainance of minor structural failures, which
@@ -146,24 +118,23 @@ spate_model<-function(x, varnames)
     
     cost_family_labour<-c(0,vv(family_labour_cost, general_CV, n_years-1))
     commun_structural_rm_contribution<- c(0, (vv(labour_contribution, general_CV,n_years-1)*cost_family_labour[2:n_years]))*
-      (1-risk_structural_failure)*chance_siltation*(1-chance_drought)
+                                      (1-failure_due_to_poor_implementation)*siltation
     
     # cost 9:loss of alluvial deposite by having proper watershed management practice as well as diversion of the sediment
-    # rich floods in to the farming area. 
+    # rich floods in to the farming area. This is a reduction in the donstream area. 
     cost_reduction_alluvial_deposite<-c(0, (vv(area_benefited_alluvial_deposits,general_CV,n_years-1)*
-                                              vv(value_alluvial_deposits,general_CV,n_years-1 )))*
-      (1-risk_structural_failure)*(1-chance_drought)
+                                              vv(value_alluvial_deposits,general_CV,n_years-1 )))*(1-failure_due_to_poor_implementation)
+                                           
     
     # cost 10: human health deterioration due to the water diversion practices and water logging
     human_health_cost <-c(0, (vv(no_people_affected,general_CV,n_years-1)*vv(cost_health_treatment,general_CV,n_years-1)))*
-      (1-risk_structural_failure)*(1-chance_drought)
+                        (1-failure_due_to_poor_implementation)
     
     # Cost 11: cost of lossing the current pasture production by shifting to crop production
     value_pasture_without_interv<-vv(current_value_pasture, general_CV, n_years)
+    total_farming_area<-c(0,vv(total_area,general_CV, n_years-1))*(1-failure_due_to_poor_implementation)
     
-    value_pasture_lost<-total_farming_area*prop_area_converted_crop*value_pasture_without_interv* (1-chance_drought)*
-      (1-risk_structural_failure)
-    
+    value_pasture_lost<-total_farming_area*prop_area_converted_crop*value_pasture_without_interv
     # Total communal cost
     total_communal_costs<-commun_structural_rm_contribution+cost_reduction_alluvial_deposite+human_health_cost+value_pasture_lost
     
@@ -182,7 +153,7 @@ spate_model<-function(x, varnames)
     crop_residue<-c(0,vv(crop_residue, general_CV, n_years-1, lower_limit = 0))
     
     farm_reveneu<-(total_farming_area*((crop_productivity*price_crop)+(crop_residue*price_residue)))*
-      (1-risk_structural_failure)*(1-yield_reduction_factor_drought)*(1-yield_reduction_factor_flooding)
+                   drought*yield_reduction_flooding
     
     # Farm operational cost (it is the sum of labour cost and other input costs). This is an annual cost and starts in the
     # second year. Because, farming starts in the second year.
@@ -190,8 +161,7 @@ spate_model<-function(x, varnames)
     farm_labour<-c(0,vv(farm_job_created, general_CV, n_years-1))
     other_farm_cost<-c(0,vv(farm_input_cost, general_CV, n_years-1))
     
-    farm_operational_cost<-total_farming_area*((farm_job_created*cost_family_labour)+other_farm_cost)*
-      (1-risk_structural_failure)
+    farm_operational_cost<-total_farming_area*((farm_job_created*cost_family_labour)+other_farm_cost)
     
     # pasture area clearing cost (i.e. to convert pasture area to crop area). This is only for the second year.
     
@@ -219,12 +189,12 @@ spate_model<-function(x, varnames)
     ## benefit 3: employment opportunity created from the intervention
     
     # farm job opportunity
-    farm_job_benefit<-total_farming_area*farm_job_created*cost_family_labour*(1-risk_structural_failure)
+    farm_job_benefit<-total_farming_area*farm_job_created*cost_family_labour
     
     # off farm job opportunity
     off_farm_cost_labour<-vv(off_farm_labour_cost, general_CV, n_years)
     
-    off_farm_job_benefit<-vv(off_farm_job, general_CV, n_years)*off_farm_cost_labour*(1-risk_structural_failure)
+    off_farm_job_benefit<-vv(off_farm_job, general_CV, n_years)*off_farm_cost_labour*(1-failure_due_to_poor_implementation)
     
     #construction job opportunity
     perc_job_construction_work<-c(construction_job_perc/100,rep(0, n_years-1))
@@ -234,7 +204,7 @@ spate_model<-function(x, varnames)
     #watershed management job
     watershed_management_job_created<-c(watershed_mgmt_job,rep(0, n_years-1))
     
-    watershed_management_job_benefit<-watershed_management_job_created*total_watershed_area*
+    watershed_management_job_benefit<-watershed_management_job_created*watershed_area*
       perc_watershed_area_intervened/100*off_farm_labour_cost
     
     #repair and maintenance job (this is the job opportunity created from the contribution of the community, which 
@@ -248,8 +218,9 @@ spate_model<-function(x, varnames)
       watershed_management_job_benefit+repair_maintenance_job
     
     ## benefit 4: benefit reducing flooding effect
-    flood_hazard_reduction<-Occurance_excess_flooding*c(0, vv(value_red_flooding_effect, general_CV, n_years-1))*
-      (1-risk_structural_failure)
+    Occurance_flooding_hazard<-chance_event(prob_flooding_hazard,value_if = 1, value_if_not = 0, n = n_years)
+    flood_hazard_reduction<-Occurance_flooding_hazard*c(0, vv(value_red_flooding_effect, general_CV, n_years-1))*
+                            (1-failure_due_to_poor_implementation)
     
     ## total other complementary communal benefits (i.e. the sum of all benefits)
     
@@ -263,27 +234,26 @@ spate_model<-function(x, varnames)
     
     # Increase in vegetative cover and land reclaimed at the catchment area
     
-    perc_annual_increase_veg_cov_density<-cumsum(c(0,vv(veg_cover_density, general_CV, n_years-1, lower_limit = 0, upper_limit = 1)*
-                                                     (1-chance_drought[2:n_years])))
+    perc_annual_increase_veg_cov_density<-cumsum(c(0,vv(veg_cover_density, general_CV, n_years-1, lower_limit = 0, upper_limit = 1)))
     perc_annual_increase_veg_cov_density[perc_annual_increase_veg_cov_density>1]<-1
     
-    perc_annual_area_reclaimed<-cumsum(c(0,vv(perc_area_reclaimed/100, general_CV, n_years-1, lower_limit = 0, upper_limit = 100)*
-                                           (1-chance_drought[2:n_years])))
+    perc_annual_area_reclaimed<-cumsum(c(0,vv(perc_area_reclaimed/100, general_CV, n_years-1, lower_limit = 0, upper_limit = 100)))
+                                           
     perc_annual_area_reclaimed[perc_annual_area_reclaimed>1]<-1
     
     vegetative_cover_value<-vv(value_vegetative_cover, general_CV, n_years)
     area_reclaimed_value<-vv(value_reclaimed_area, general_CV, n_years)
     
-    value_increase_vegetative_cover<-perc_annual_increase_veg_cov_density*total_watershed_area*
-      perc_watershed_area_intervened/100*vegetative_cover_value
+    value_increase_vegetative_cover<-perc_annual_increase_veg_cov_density*watershed_area*perc_watershed_area_intervened/100*
+                                     vegetative_cover_value
     
-    value_increase_area_reclamation<-perc_annual_area_reclaimed*total_watershed_area*perc_watershed_area_intervened/100*
-      area_reclaimed_value
+    value_increase_area_reclamation<-perc_annual_area_reclaimed*watershed_area*perc_watershed_area_intervened/100*
+                                   area_reclaimed_value
     
     # improve in micro climate and ecosystem due to catchment management
     value_improvement_micro_climate<-vv(value_improve_ecosystem, general_CV, n_years)
     
-    value_improvement_micro_climate<-total_watershed_area*perc_watershed_area_intervened/100*value_improvement_micro_climate*
+    value_improvement_micro_climate<-watershed_area*perc_watershed_area_intervened/100*value_improvement_micro_climate*
       perc_annual_increase_veg_cov_density
     
     ##total environmental benefit of the proposed intervention
@@ -294,12 +264,11 @@ spate_model<-function(x, varnames)
     
     # Reduction in vegetative and forest area further down from the structure
     
-    veg_forest_area_reduction_cost<- c(0,rep(vegetative_area_affected*value_vegetative_cover/100, n_years-1))*
-      (1-risk_structural_failure)*(1-chance_drought)
+    veg_forest_area_reduction_cost<- c(0,rep(vegetative_area_affected*value_vegetative_cover/100, n_years-1))*(1-failure_due_to_poor_implementation)
     
     # environmental cost due to soil disturbance and emission
-    soil_exposed_perc<-c(0, vv(perc_soil_disturbed/100, general_CV, n_years-1, lower_limit = 0, upper_limit = 100))*
-      (1-risk_structural_failure)
+    soil_exposed_perc<-c(0, vv(perc_soil_disturbed/100, general_CV, n_years-1, lower_limit = 0, upper_limit = 100))*(1-failure_due_to_poor_implementation)
+    
     add_cost_soil_disturbance_emission<-c(0, vv(value_soil_disturbance, general_CV, n_years-1))
     
     cost_soil_disturbance_emission<-total_farming_area*soil_exposed_perc*add_cost_soil_disturbance_emission
@@ -357,7 +326,7 @@ spate_model<-function(x, varnames)
     
 }
 
-decisionSupport(paste(filepath,"Turkana_estimates_190310.csv",sep=""), #input file with estimates
+decisionSupport(paste(filepath,"Turkana_estimates_190313.csv",sep=""), #input file with estimates
                 paste(filepath,"MCResults",sep=""), #output folder
                 write_table=TRUE,spate_model,10000,
                 functionSyntax="plainNames")
