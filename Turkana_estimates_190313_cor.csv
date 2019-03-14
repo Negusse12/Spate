@@ -1,0 +1,3 @@
+variable,crop_production,crop_residue
+crop_production,1,0.99
+crop_residue,0.99,1

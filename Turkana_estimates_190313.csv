@@ -1,0 +1,97 @@
+,description,lower,median,upper,distribution,variable,label
+General Variables,,,,,,,
+,Number of years to run the simulation,25,,25,const,n_years,No of years to run the simulation
+,General coefficient of Variation,5,,10,posnorm,general_CV,General coefficient of variation
+,Farmers discount rate,15,,20,posnorm,discount_rate_farmers,Farmers' discount rate
+,Implementer's discount rate,10,,10,const,discount_rate,Discount rate
+Benefits,,,,,,,
+Increase in crop production and residue,,,,,,,
+,Total farming area that can be irrigated by the newly developed intervention (ha),180,,200,norm,total_area,Area under the medium project (ha)
+,Crop yield (Ton/ha) ,0.9,,1.8,norm,crop_production,Crop yield
+,Price of crop produced (Shs/Ton),80000,,100000,posnorm,crop_price,Crop price
+,Residue collected from crop production (Ton/ha),2.7,,5.4,norm,crop_residue,Crop residue
+,Price of residue (Shs/T),20000,,50000,posnorm,residue_price,Residue price
+Employment opportunity,,,,,,,
+,Annual work-days farm job created (work-day/ha),60,,150,posnorm,farm_job_created,Farm job created
+,Expected off farm job created from the intervention (work-day/year),1000,,5000,posnorm,off_farm_job,Off farm job created medium
+,Percentage of employment opportunity created from the construction (% of total project cost),1,,5,posnorm,construction_job_perc,Construction job created
+,Number of employment opportunity created from the catchment restoration practice (work-day/km2),30,,50,posnorm,watershed_mgmt_job,Watershed management job created
+,Family labor cost (Shs/work-day),100,,300,posnorm,family_labour_cost,Family labour cost
+,Off-farm labor cost  (Shs/work-day),400,,600,posnorm,off_farm_labour_cost,Off farm labour cost
+Capacity building,,,,,,,
+,Total number of population in Lomidat area,1500,,3000,posnorm,total_population,Total population
+,Proportion of population getting training,0.1,,0.2,tnorm_0_1,prop_trained,Proportion trained
+,Proportion of trained who adopt or start farming practice,0.4,,0.6,tnorm_0_1,prop_adopted,Proportion adopted
+,Value of the capacity development (Shs/person),20000,,50000,posnorm,value_capacity_development,Value of capacity development
+Reducing flooding effect,,,,,,,
+,Probability of flooding hazard in the area.,0.01,,0.1,tnorm_0_1,prob_flooding_hazard,Prob. of flood hazard
+,The value of reduction in flooding effect by having the structure,2700000,,4500000,posnorm,value_red_flooding_effect,Value of reduction in flooding effect 
+Improvement in ecosystem service and micro-climate,,,,,,,
+,Value of improvement in ecosystem and microclimate (Shs/km2) ,200000,,300000,posnorm,value_improve_ecosystem,Value of improv. in ecosystem
+Increase in vegetative cover and area reclaimed,,,,,,,
+,Cover density per square kilometer ,0.1,,0.2,tnorm_0_1,veg_cover_density,Vegetative cover density
+,Total watershed area ( as multiplier of total farming area),5,,7,posnorm,watershed_area,Total watershed area
+,Value of additional cover (Shs/km2),200000,,300000,posnorm,value_vegetative_cover,value of vegetative cover
+,Annual percentage of land reclaimed (%) ,10,,20,posnorm,perc_area_reclaimed,percentage area reclaimed
+,Value of reclaimed land (Shs/km2),625000,,900000,posnorm,value_reclaimed_area,value of reclaimed area
+Costs,,,,,,,
+Farm input costs,,,,,,,
+,Cost of Agricultural production (Shs/ha),5000,,10000,posnorm,farm_input_cost,Farm input cost
+Structural repair and maintenance cost(community),,,,,posnorm,,
+,Individual labor contribution for the repair and maintenance (work-days/year),100,,150,posnorm,labour_contribution,Labour contribution for medium
+Fencing of farming area,,,,,,,
+,Perimeter fenced (km),15,,20,posnorm,perimeter_fenced,Perimeter fenced under medium
+,Cost of perimeter fencing (Shs/km),100000,,300000,posnorm,cost_fence,Cost of fencing
+Deforestation cost for fencing,,,,,,,
+,Value of trees cleared for perimeter fencing (Shs/km),10000,,30000,posnorm,value_tree_cleared,Value of tree cleared
+Soil disturbance and emission,,,,,,,
+,Area exposed to soil disturbance and emission (as % of total crop farming area),10,,20,posnorm,perc_soil_disturbed,Percentage of soil disturbance
+,Value of the soil emission (Shs/ha),1000,,5000,posnorm,value_soil_disturbance,Value of soil disturbance
+Reduction in vegetative and forest area,,,,,,,
+,Total vegetative area reduced (ha),5,,10,posnorm,vegetative_area_affected,Vegetative area reduced under medium
+Loss of fertile alluvial deposits(communal)  ,,,,,,,
+,Area benefiting from alluvial deposits (ha),5,,10,posnorm,area_benefited_alluvial_deposits,Area benefited by alluvial deposits medium
+,Value of alluvial deposits (Shs/ha),1000,,2000,posnorm,value_alluvial_deposits,Value of alluvial deposits
+Human health problems,,,,,,,
+,Cases reported (i.e. total no people affected),10,,30,posnorm,no_people_affected,No.of people affected under medium
+,Cost of health treatment per person per year (Shs),400,,500,posnorm,cost_health_treatment,Cost of human health
+Loss of pasture area,,,,,,,
+,Proportion of area to be converted from pasture land to crop farming,0.5,,0.9,tnorm_0_1,prop_area_converted_crop,Area converted to crop
+,Value of pasture under current condition (Shs/ha),20000,,30000,posnorm,current_value_pasture,Current value of pasture
+Pasture area clearing costs,,,,,,,
+,Clearing costs per ha for crop producers (Shs/ha),100000,,200000,posnorm,pasture_clearing_cost,Pasture clearing cost
+Cost of study and design,,,,,,,
+,Cost forstudy and design of the structure,600000,,2000000,posnorm,study_design_cost,Study and design cost of medium
+Community awareness and mobilization cost,,,,,,,
+,Total cost of training/community brazes ,1500000,,2000000,posnorm,training_cost,Training cost under medium
+Infrastructure construction cost,,,,,,,
+,Construction cost of the structure,80000000,,100000000,norm,construction_cost,Construction cost of the structure
+Catchment restoration cost,,,,,,,
+,Percentage area to be intervened,30,,50,posnorm,perc_watershed_area_intervened,Watershed area intervened
+,Cost of catchment restoration (Shs/km2),2000000,,5000000,posnorm,cost_watershed_mgmt,Cost of catchment management
+Repair and maintenance,,,,,,,
+,Repair and maintenance budget as a percentage of total construction cost (%),5,,15,posnorm,perc_repair_maint_cost,Repair and maintenance cost
+Risks,,,,,,,
+Additional cost due to the slope,,,,,,,
+,Probability of facing slopey area,0.2,,0.4,tnorm_0_1,prob_slopey_area,Probability of slopey area
+,Percentage increase in construction cost due to slope,20,,50,posnorm,perc_increase_cost_due_to_slope,Cost due to slopey area
+Lack of proper design and planning,,,,,,,
+,Probability of improper design and/or planning,0.002,,0.004,tnorm_0_1,prob_improper_design,Prob. improper design
+Poor interpretation and implementation of design,,,,,,,
+,Probability of accurate supervision ,0.8,,0.9,tnorm_0_1,prob_supervision,Prob. of supervision
+,Probability of rejecting supervisors suggestion,0.004,,0.02,tnorm_0_1,prob_reject_suggestions,Prob. rejecting suggestion
+,Additional cost of supervision as proportion of total construction cost,0.03,,0.06,tnorm_0_1,perc_supervision_cost,Supervision cost
+,Probability of total structural failure (if there is design problem or improper interpretation and construction of the structure),0.01,,0.05,tnorm_0_1,prob_total_str_failure,Prob. of total structural failure
+Conflict of interests,,,,,,,
+,Probability of conflict,0.2,,0.3,tnorm_0_1,prob_conflict,Probability of conflict
+,Cost of  managing conflict (Shs),20000,,100000,posnorm,cost_managing_conflict,Cost of managing conflict
+Sedimentation and/or siltation problem,,,,,,,
+,Probability of sedimentation and siltation,0.8,,0.9,tnorm_0_1,prob_siltation,Probability of siltation
+Risk of drought,,,,,,,
+,Probability of yeild reduction due to less precipitation ( drought),0.2,,0.4,tnorm_0_1,prob_yield_red_dry,Probability of drought
+,Percentage reduction in crop yields,40,,70,posnorm,perc_reduction_crop_yield,Perc. crop yield reduction
+Risk of excess rainfall and flooding,,,,,,,
+,Prob of flooding farming plot and lead to reduction in crop productivity,0.04,,0.1,tnorm_0_1,prob_yield_red_flood,Prob yield reduction by flood
+,Percentage reduction of crop yield (%),50,,80,posnorm,perc_reduction_crop_yield_flood,% reduction in yield due to flood
+Exchanger rate,,,,,,,
+,"Dollar to Ksh exchange rate as of 05 June, 2018",100,,100,const,exchange_rate,Exchange rate
