@@ -150,6 +150,8 @@ spate_model<-function(x, varnames)
     (1-failure_due_to_poor_implementation)
   
   # Cost 11: cost of lossing the current pasture production by shifting to crop production
+  #CORY NOTE ####
+  #Would all pasture be lost? Is 'current_value_pasture' the whole pasture area of the whole dam?
   value_pasture_without_interv<-vv(current_value_pasture, general_CV, n_years)
   total_farming_area<-c(0,vv(total_area,general_CV, n_years-1))*(1-failure_due_to_poor_implementation)
   
