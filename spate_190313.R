@@ -1,9 +1,12 @@
 library(DAutilities)
 library(decisionSupport)
 
-#The file path is the same as the .Rproj (or relative to it)
-filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
-
+#The file path should be the same as the .Rproj (or relative to it)
+#If Negusse
+#filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
+#If Cory
+#This is the same as the working directory... getwd()
+filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}

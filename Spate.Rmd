@@ -25,7 +25,7 @@ for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}
 ```
 
 ```{r}
-make_variables(estimate_read_csv("Turkana_estimates_190313.csv",sep=""))
+make_variables(estimate_read_csv(paste(filepath,"Turkana_estimates_190313.csv",sep="")))
 ```
 
 #Risks
