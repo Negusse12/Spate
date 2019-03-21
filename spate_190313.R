@@ -1,6 +1,7 @@
 library(DAutilities)
 library(decisionSupport)
 
+#The file path is the same as the .Rproj (or relative to it)
 filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
 
 make_variables<-function(est,n=1)
