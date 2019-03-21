@@ -5,12 +5,12 @@ date: "3/21/2019"
 output: html_document
 ---
 
-```{r}
+```{r libraries, include=FALSE}
 library(DAutilities)
 library(decisionSupport)
 ```
 
-```{r echo=FALSE}
+```{r filepath, echo=FALSE}
 #If Negusse
 #filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
 #If Cory
@@ -18,25 +18,28 @@ library(decisionSupport)
 filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"   
 ```
 
-```{r}
+```{r makevariables}
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}
 ```
 
-```{r}
+Use the `estimate_read_csv` function to import the dataset `Turkana_estimates.csv`.
+
+```{r estimate_read_csv}
 make_variables(estimate_read_csv(paste(filepath,"Turkana_estimates_190313.csv",sep="")))
 ```
 
-#Risks
+Building the model
 
-```{r}
+```{r spate_model}
 spate_model<-function(x, varnames)
 {
-    
+ 
+  #Risks   
   # For total structural damage
   failure_due_to_poor_implementation<-cummax(c(0, chance_event(prob_total_str_failure, value_if = 1, value_if_not = 0, n = n_years-1)))  
-   
+
   ## Risk of conflict and conflict management cost. This is the cost from the resource based conflicts, which
   # resulted from the land use change (i.e. the change from pasture area into framing area). This can happen
   # at any time and, thus, we use the chance event function.
@@ -274,7 +277,7 @@ spate_model<-function(x, varnames)
     total_environmental_cost<-veg_forest_area_reduction_cost+cost_soil_disturbance_emission+deforestation_cost
     
     # Cash flow (i.e. the sum of all undiscounted impacts - communal , implementer's and environmental) of the proposed
-    # intervention. It is changed to dollar at an exchange rate of $1=100ksh.
+    # intervention (exchange rate of $1=100ksh).
     
     # Net communal effect
     
@@ -320,7 +323,11 @@ spate_model<-function(x, varnames)
 
 ```
 
-```{r}
+#decisionSupport
+
+Run the `decisionSupport` function on the new `spate_model` function we have created describing the decision.
+
+```{r decisionSupport}
 decisionSupport(paste(filepath,"Turkana_estimates_190313.csv",sep=""), #input file with estimates
                 paste(filepath,"MCResults",sep=""), #output folder
                 write_table=TRUE,spate_model,10000,
@@ -328,78 +335,3 @@ decisionSupport(paste(filepath,"Turkana_estimates_190313.csv",sep=""), #input fi
 
 ```
 
-```{r}
-#make evpi plots now with a real file
-base_folder<-paste(filepath,"MCResults/",sep="")   #the folder where your inputs are
-out_folder<-paste(filepath,"DAresults/",sep="")   #the folder where your outputs should go
-dir.create(out_folder)
-MC_file<-read.csv(paste(base_folder,"mcSimulationResults.csv",sep=""))
-outvars<-list( "Communal_effect_NPV",
-               "Income_per_farmer_NPV",
-               "Environmental_effect_NPV",
-               "Implementer_NPV",
-               "Overall_project_effect_NPV"
-               
-)
-
-labels<-list("Communal NPV",
-             "NPV per beneficiary",
-             "Environmental NPV",
-             "Implementer's NPV",
-             "Overall project NPV"
-             
-)
-
-```
-
-```{r}
-legendtable<-read.csv(paste(filepath,"Turkana_legend.csv",sep="")) # this one has to be prepared manually
-
-```
-
-```{r}
-for (i in seq_along(outvars))
-{makeMCPlot(NPV_table=MC_file,variable_names=outvars[i],
-            colorscheme="minus_plus_red_green",
-            fonttype="serif",lwd=2,cex.axis=2,
-            x_label=paste("Simulated",labels[i],sep=""),borderlines=TRUE,scaler="auto",fileformat="png",
-            file_name=paste(out_folder,"MCplot_",labels[i],sep=""),
-            percentile_remove=c(0.01,0.99))
-  
-  PLStab<-read.csv(paste(base_folder,outvars[i],"_pls_results.csv",sep=""))
-  
-  makePLSplot(PLS_table=PLStab,npls=7,plot_title=paste(labels[i],sep=""),cex.axis=1.5,
-              lwd=0.1,legend_table=legendtable,
-              fileformat="png",filename=paste(out_folder,"PLSplot_",labels[i],".png",sep=""))
-}
-
-```
-
-```{r}
-
-mc_EVPI<-MC_file[,-grep("cashflow",colnames(MC_file),ignore.case = TRUE)]
-```
-
-```{r}
-empirical_EVPI(mc_EVPI,"Communal_effect_NPV",fileformat="png",outfolder=out_folder,write_table=TRUE)
-
-```
-
-```{r}
-dir.create(paste(filepath,"Compound figures/",sep=""))
-for (outvar in outvars) 
-{
-  compound_figure(variable_name=outvar,
-                  MC_table=MC_file,
-                  PLS_table=read.csv(paste(base_folder,outvar,"_pls_results.csv",sep="")),
-                  EVPI_table=read.csv(paste(out_folder,"EVPI_table_",outvar,".csv",sep="")),
-                  cash_flow_vars=paste("Cashflow_",outvar,sep=""),
-                  nbreaks=100,scaler="auto",percentile_remove=c(.01,.99),
-                  npls=15,plsthreshold=0.8,colorscheme="quant_col",MCcolor="negpos",fonttype='sans',
-                  borderlines=FALSE,lwd=1,
-                  fileformat="png",filename=paste(filepath,"Compound figures/",outvar,sep=""),
-                  legend_table=legendtable)
-  
-}
-
-```
