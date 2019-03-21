@@ -1,0 +1,64 @@
+"","thold","EVPI_do","EVPI_dont"
+"crop_production",NA,0,0
+"crop_residue",NA,0,0
+"n_years",no variation,0,0
+"general_CV",no relationship,0,0
+"discount_rate_farmers",NA,0,0
+"discount_rate",no variation,0,0
+"total_area",NA,0,0
+"crop_price",NA,0,0
+"residue_price",NA,0,0
+"farm_job_created",no relationship,0,0
+"off_farm_job",NA,0,0
+"construction_job_perc",no relationship,0,0
+"watershed_mgmt_job",no relationship,0,0
+"family_labour_cost",no relationship,0,0
+"off_farm_labour_cost",no relationship,0,0
+"total_population",no relationship,0,0
+"prop_trained",NA,0,0
+"prop_adopted",no relationship,0,0
+"value_capacity_development",no relationship,0,0
+"prob_flooding_hazard",no relationship,0,0
+"value_red_flooding_effect",no relationship,0,0
+"value_improve_ecosystem",no relationship,0,0
+"veg_cover_density",no relationship,0,0
+"watershed_area",NA,0,0
+"value_vegetative_cover",no relationship,0,0
+"perc_area_reclaimed",no relationship,0,0
+"value_reclaimed_area",no relationship,0,0
+"farm_input_cost",NA,0,0
+"labour_contribution",no relationship,0,0
+"perimeter_fenced",no relationship,0,0
+"cost_fence",NA,0,0
+"value_tree_cleared",no relationship,0,0
+"perc_soil_disturbed",no relationship,0,0
+"value_soil_disturbance",no relationship,0,0
+"vegetative_area_affected",no relationship,0,0
+"area_benefited_alluvial_deposits",no relationship,0,0
+"value_alluvial_deposits",no relationship,0,0
+"no_people_affected",no relationship,0,0
+"cost_health_treatment",no relationship,0,0
+"prop_area_converted_crop",NA,0,0
+"current_value_pasture",NA,0,0
+"pasture_clearing_cost",NA,0,0
+"study_design_cost",no relationship,0,0
+"training_cost",no relationship,0,0
+"construction_cost",no relationship,0,0
+"perc_watershed_area_intervened",no relationship,0,0
+"cost_watershed_mgmt",no relationship,0,0
+"perc_repair_maint_cost",no relationship,0,0
+"prob_slopey_area",NA,0,0
+"perc_increase_cost_due_to_slope",no relationship,0,0
+"prob_improper_design",no relationship,0,0
+"prob_supervision",no relationship,0,0
+"prob_reject_suggestions",no relationship,0,0
+"perc_supervision_cost",no relationship,0,0
+"prob_total_str_failure",NA,0,0
+"prob_conflict",no relationship,0,0
+"cost_managing_conflict",no relationship,0,0
+"prob_siltation",no relationship,0,0
+"prob_yield_red_dry",NA,0,0
+"perc_reduction_crop_yield",NA,0,0
+"prob_yield_red_flood",NA,0,0
+"perc_reduction_crop_yield_flood",no relationship,0,0
+"exchange_rate",no variation,0,0
