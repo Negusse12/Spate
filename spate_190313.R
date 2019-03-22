@@ -1,12 +1,15 @@
 library(DAutilities)
 library(decisionSupport)
 
+# Cory_changes
 #The file path should be the same as the .Rproj (or relative to it)
 #If Negusse
 #filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
 #If Cory
 #This is the same as the working directory... getwd()
-filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"
+#filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"
+filepath<-"D:/Git/Spate"  
+
 
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
