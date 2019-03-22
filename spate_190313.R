@@ -1,7 +1,7 @@
 library(DAutilities)
 library(decisionSupport)
 
-filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
+filepath<-"D:/Git/Spate"  
 
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
