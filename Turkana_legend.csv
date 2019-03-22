@@ -1,0 +1,69 @@
+variable,label
+n_years,No. of years to run the simulation
+general_CV,General coefficient of variation
+discount_rate_farmers,Farmers' discount rate
+discount_rate,Discount rate
+total_area,Total farming area
+crop_production,Crop yield
+crop_price,Crop price
+crop_residue,Crop residue
+residue_price,Residue price
+farm_job_created,Farm job created
+off_farm_job,Off farm job created
+construction_job_perc,Construction job created
+watershed_mgmt_job,Watershed management job created
+family_labour_cost,Family labour cost
+off_farm_labour_cost,Off farm labour cost
+total_population,Total population
+prop_trained,Proportion trained
+prop_adopted,Proportion adopted
+value_capacity_development,Value of capacity development
+prob_flooding_hazard,Prob. of flood hazard
+value_red_flooding_effect,Reduction in flooding effect
+value_improve_ecosystem,Value of improv. in ecosystem
+veg_cover_density,Vegetative cover density
+watershed_area,Total watershed area
+value_vegetative_cover,value of vegetative cover
+perc_area_reclaimed,percentage area reclaimed
+value_reclaimed_area,value of reclaimed area
+farm_input_cost,Farm input cost
+labour_contribution,Labour contribution
+perimeter_fenced,Perimeter fenced
+cost_fence,Cost of fencing
+value_tree_cleared,Value of tree cleared
+perc_soil_disturbed,Percentage of soil disturbance
+value_soil_disturbance,Value of soil disturbance
+vegetative_area_affected,Vegetative area reduced
+area_benefited_alluvial_deposits,Area benefited by alluvial deposits
+value_alluvial_deposits,Value of alluvial deposits
+no_people_affected,No.of people affected 
+cost_health_treatment,Cost of human health
+prop_area_converted_crop,Area converted to crop
+current_value_pasture,Current value of pasture
+pasture_clearing_cost,Pasture clearing cost
+study_design_cost,Study and design cost
+training_cost,Training cost
+construction_cost,Construction cost
+perc_watershed_area_intervened,Watershed area intervened
+cost_watershed_mgmt,Cost of catchment management
+perc_repair_maint_cost,Repair and maintenance cost
+prob_slopey_area,Probability of slopey area
+perc_increase_cost_due_to_slope,Cost due to slopey area
+prob_improper_design,Prob. improper design
+prob_supervision,Prob. of supervision
+prob_reject_suggestions,Prob. rejecting suggestion
+perc_supervision_cost,Supervision cost
+prob_total_str_failure,Prob. of total structural failure
+prob_conflict,Probability of conflict
+cost_managing_conflict,Cost of managing conflict
+prob_siltation,Probability of siltation
+prob_yield_red_dry,Probability of drought
+perc_reduction_crop_yield,Perc. crop yield reduction
+prob_yield_red_flood,Prob. Yield reduction by flood
+perc_reduction_crop_yield_flood,Reduction in yield due to flood
+exchange_rate,Exchange rate
+Communal_effect_NPV,Communal NPV 
+Environmental_effect_NPV,Environmental NPV
+Implementer_NPV,Implementer's NPV
+Overall_project_effect_NPV,Overall project NPV
+Income_per_farmer_NPV,NPV per beneficiary
