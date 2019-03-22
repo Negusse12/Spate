@@ -15,8 +15,11 @@ library(decisionSupport)
 #filepath<-"D:/PhD/Turkana/spate/crop_production/Single_intervention/"  
 #If Cory
 #This is the same as the working directory... getwd()
-filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"   
+#filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"
+#The right file path to my git location in my computer.
+filepath<-"D:/Git/Spate"
 ```
+
 
 ```{r makevariables}
 make_variables<-function(est,n=1)
