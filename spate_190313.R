@@ -8,14 +8,14 @@ library(decisionSupport)
 #If Cory
 #This is the same as the working directory... getwd()
 #filepath<-"/Users/macbook/Dropbox/University of Bonn/PhD Projects/Negusse/02_Spate_irrigation/Spate/"
-filepath<-"D:/Git/Spate"  
-
+#filepath<-"D:/Git/Spate"  
+#I removed all of these paths. As Cory said, this should be the project directory. Then we won't have to adjust this each time we run it on a new computer.
 
 make_variables<-function(est,n=1)
 { x<-random(rho=est, n=n)
 for(i in colnames(x)) assign(i, as.numeric(x[1,i]),envir=.GlobalEnv)}
 
-make_variables(estimate_read_csv(paste(filepath,"Turkana_estimates_190313.csv",sep="")))
+make_variables(estimate_read_csv("Turkana_estimates_190313.csv"))
 
 spate_model<-function(x, varnames)
 {
@@ -350,15 +350,15 @@ spate_model<-function(x, varnames)
   
 }
 
-decisionSupport(paste(filepath,"Turkana_estimates_190313.csv",sep=""), #input file with estimates
-                paste(filepath,"MCResults",sep=""), #output folder
+decisionSupport("Turkana_estimates_190313.csv", #input file with estimates
+                "MCResults", #output folder
                 write_table=TRUE,spate_model,10000,
                 functionSyntax="plainNames")
 
 
 #make evpi plots now with a real file
-base_folder<-paste(filepath,"MCResults/",sep="")   #the folder where your inputs are
-out_folder<-paste(filepath,"DAresults/",sep="")   #the folder where your outputs should go
+base_folder<-"MCResults/"   #the folder where your inputs are
+out_folder<-"DAresults/"   #the folder where your outputs should go
 dir.create(out_folder)
 MC_file<-read.csv(paste(base_folder,"mcSimulationResults.csv",sep=""))
 outvars<-list( "Communal_effect_NPV",
@@ -377,7 +377,7 @@ labels<-list("Communal NPV",
              
 )
 
-legendtable<-read.csv(paste(filepath,"Turkana_legend.csv",sep="")) # this one has to be prepared manually
+legendtable<-read.csv("Turkana_legend.csv") # this one has to be prepared manually
 
 for (i in seq_along(outvars))
 {makeMCPlot(NPV_table=MC_file,variable_names=outvars[i],
@@ -399,7 +399,7 @@ mc_EVPI<-MC_file[,-grep("cashflow",colnames(MC_file),ignore.case = TRUE)]
 
 empirical_EVPI(mc_EVPI,"Communal_effect_NPV",fileformat="png",outfolder=out_folder,write_table=TRUE)
 
-dir.create(paste(filepath,"Compound figures/",sep=""))
+dir.create("Compound figures/")
 for (outvar in outvars) 
 {
   compound_figure(variable_name=outvar,
@@ -410,7 +410,7 @@ for (outvar in outvars)
                   nbreaks=100,scaler="auto",percentile_remove=c(.01,.99),
                   npls=15,plsthreshold=0.8,colorscheme="quant_col",MCcolor="negpos",fonttype='sans',
                   borderlines=FALSE,lwd=1,
-                  fileformat="png",filename=paste(filepath,"Compound figures/",outvar,sep=""),
+                  fileformat="png",filename=paste("Compound figures/",outvar,sep=""),
                   legend_table=legendtable)
   
 }
